@@ -1,0 +1,32 @@
+version: "3"
+
+networks:
+  backend:
+    driver: "bridge"
+
+services:
+  crawler:
+    build:
+      context: .
+    command: python3 main.py
+    ports:
+      - "5000:3000"
+    volumes:
+      - ./:/usr/src/app
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+    networks:
+      - backend
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - /data:/var/lib/mysql
+    networks:
+      - backend
